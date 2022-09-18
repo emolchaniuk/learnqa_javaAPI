@@ -1,3 +1,5 @@
+package Lesson2;
+
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
@@ -6,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public class getTextTest {
 
     @Test
-    public void testGet_text () {
+    public void testGetText () {
         Response response = RestAssured
                 .get("https://playground.learnqa.ru/api/get_text")
                 .andReturn();
@@ -15,7 +17,4 @@ public class getTextTest {
         response.body().print();
 
     }
-
-
-
 }
