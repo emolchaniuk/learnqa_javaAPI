@@ -15,61 +15,71 @@ public class Token {
     @Test
     public void token () {
 
-        //1. Создать задачу
-        Response response = RestAssured
+    //1. Создать задачу
+        JsonPath response = RestAssured
                 .given()
                 .get("https://playground.learnqa.ru/ajax/api/longtime_job")
-                .andReturn();
+                .jsonPath();
 
-        response.prettyPrint();
+        String token = response.getString("token");
+        String seconds = response.getString("seconds");
+        System.out.println(token);
+        System.out.println(seconds);
 
         //2. сделать один запрос с token ДО того, как задача готова, убедится в правильности поля status
 
-        Map < String, String> dataForRequest = new HashMap<>();
-        dataForRequest.put(response.getBody());
-        System.out.println(dataForRequest);
-
-        Response response2 = RestAssured
+        JsonPath response2 = RestAssured
                 .given()
-                .queryParam(dataForRequest)
+                .queryParam("token", token)
                 .get("https://playground.learnqa.ru/ajax/api/longtime_job")
-                .andReturn();
+                .jsonPath();
 
-        response2.prettyPrint();
+        String status = response2.getString("status");
+        System.out.println(status);
+        String state = new String("Job is NOT ready");
 
-        if (response2.getBody("status").equals("Job is NOT ready")) {
-            System.out.println("Status is correct: Job is NOT ready");
+         if (status.equals(state)) {
+            System.out.println("Status is correct: Job is NOT ready yet");
         } else {
             System.out.println("Status is incorrect: already ready");
         }
 
         //3. подождать нужное количество секунд
-        Thread.sleep(response.body("seconds"));
+
+//        try {
+//            Long l1 = new Long(seconds);
+//            System.out.println(l1);
+//        }
+//        catch (NumberFormatException e) {
+//            System.err.println("Неправильный формат строки!");
+//        }
+        long time = Long.parseLong("seconds", 10);
+        Thread.sleep(time);
+
+
 
         //4.сделать один запрос c token ПОСЛЕ того, как задача готова, убедиться в правильности поля status и наличии поля result
 
 
-        Response response3 = RestAssured
+        JsonPath response3 = RestAssured
                         .given()
-                        .queryParam(dataForRequest)
+                        .queryParam("token", "token")
                         .get("https://playground.learnqa.ru/ajax/api/longtime_job")
                         .jsonPath();
 
-        response3.prettyPrint();
+        String status2 = response3.getString("status");
+        System.out.println(status2);
 
-        if (response3.body("result")) {
-            System.out.println("result is positive");
+        String result = response3.getString("result");
+        String readyJob = new String("Job is ready");
+
+        if (result.equals(readyJob)) {
+            System.out.println("Result is positive - Task is ready");
         } else {
-            System.out.println("Result is negative");
-        }
-
-
-
-
-
-
-
-
+        System.out.println("Result is negative - Task is not ready ");
     }
 
-}
+
+
+
+}}
