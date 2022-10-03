@@ -24,13 +24,13 @@ public class UserAgentTest {
             "'Mozilla/5.0 (iPad; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1', Mobile, No, iPhone"
     })
 
-    public void userAgentTest(String userAgent) {
+    public void userAgentTest(String userAgent, String platform, String browser, String device) {
         Map<String, String> headers = new HashMap<>();
         //put our data into headers to send it into response
         headers.put("User-Agent", userAgent );
-        headers.put("platform", userAgent);
-        headers.put("browser", userAgent);
-        headers.put("device", userAgent);
+        headers.put("platform", platform);
+        headers.put("browser", browser);
+        headers.put("device", device);
 
         JsonPath response = RestAssured
                 .given()
@@ -39,29 +39,23 @@ public class UserAgentTest {
                 .jsonPath();
 
         String userAgentR = response.getString("user_agent");
-        String platform = response.getString("platform");
-        String browser = response.getString("browser");
-        String device = response.getString("device");
+        String platformR = response.getString("platform");
+        String browserR = response.getString("browser");
+        String deviceR = response.getString("device");
 
 
         System.out.println(userAgentR);
-        System.out.println(platform);
-        System.out.println(browser);
-        System.out.println(device);
+        System.out.println(platformR);
+        System.out.println(browserR);
+        System.out.println(deviceR);
 
 
+        assertEquals(headers.get("User-Agent"), userAgentR, "header 'user_agent' is not correct");
+        assertEquals(headers.get("platform"), platformR, "header 'platform' is not correct");
+        assertEquals(response.get("browser"), browserR, "header 'browser' is not correct");
+        assertEquals(response.get("device"), deviceR, "header 'device' is not correct");
 
-        String expectedUA = (userAgentR.length() > 0) ? userAgent : "notKnownValue";
-        assertEquals(expectedUA, userAgent, "header user_agent is not correct");
 
-        String expectedPlatform = (platform.length() > 0) ? platform : "notKnownValue";
-        assertEquals(expectedPlatform, platform, "header platform is not correct");
-
-        String expectedBrowser = (browser.length() > 0) ? browser : "notKnownValue";
-        assertEquals(expectedBrowser, browser, "header browser is not correct");
-
-        String expectedDevice = (device.length() > 0) ? device : "notKnownValue";
-        assertEquals(expectedDevice, device, "header device is not correct");
 
 
 
