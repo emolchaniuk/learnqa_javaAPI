@@ -2,16 +2,9 @@ package lib;
 
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.RestAssured;
 import io.restassured.http.Header;
-import io.restassured.http.Headers;
 import io.restassured.response.Response;
-import org.checkerframework.checker.units.qual.A;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -85,7 +78,7 @@ public class apiCoreRequests {
     }
 
     @Step("Try to create user with too long username")
-    public Response testWithLongUsername (String url, Map<String, String> userData) {
+    public Response createUserWithLongUsername (String url, Map<String, String> userData) {
         return given()
                 .filter(new AllureRestAssured())
                 .body(userData)
@@ -100,8 +93,62 @@ public class apiCoreRequests {
                 .header(new Header("x-csrf-token", token))
                 .cookie("auth_sid", cookie)
                 .body(authData)
+                .get(url)
+                .andReturn();
+    }
+
+    @Step("Try to edit data by unauthorized user")
+    public Response makePutRequest(String url, Map<String, String> editData) {
+        return given()
+                .filter(new AllureRestAssured())
+                .body(editData)
+                .put(url)
+                .andReturn();
+    }
+
+
+    @Step ("Try to Change Email Of User")
+    public Response changeEmailOfUser (String url,Map<String, String> userData ) {
+        return given()
+                .filter(new AllureRestAssured())
+                .body(userData)
                 .post(url)
                 .andReturn();
     }
+
+    @Step ("Try to Change firstName Of User")
+    public Response changeFirstNameOfUser (String url,Map<String, String> userData ) {
+        return given()
+                .filter(new AllureRestAssured())
+                .body(userData)
+                .post(url)
+                .andReturn();
+    }
+
+    @Step("Try to change email")
+    public Response makePutRequestToChangeEmail (String url, Map<String, String> authData, String token, String cookie) {
+        return given()
+                .filter(new AllureRestAssured())
+                .header(new Header("x-csrf-token", token))
+                .cookie("auth_sid", cookie)
+                .body(authData)
+                .put(url)
+                .andReturn();
+    }
+
+    @Step("Try to change email")
+    public Response makePutRequestToChangeFirtsName (String url, Map<String, String> authData, String token, String cookie) {
+        return given()
+                .filter(new AllureRestAssured())
+                .header(new Header("x-csrf-token", token))
+                .cookie("auth_sid", cookie)
+                .body(authData)
+                .put(url)
+                .andReturn();
+    }
+
+
+
+
 
  }
