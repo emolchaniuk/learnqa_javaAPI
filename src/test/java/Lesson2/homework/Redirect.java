@@ -12,7 +12,7 @@ public class Redirect {
         Response response = RestAssured
                 .given()
                 .redirects()
-                .follow(false)
+                .follow(true)
                 .when()
                 .get("https://playground.learnqa.ru/api/long_redirect")
                 .andReturn();
