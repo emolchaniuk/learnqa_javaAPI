@@ -65,7 +65,7 @@ public class UserRegistryTest extends BaseTestCase {
         userData = DataGenerator.getRegistrationData(userData);
 
         Response responseCreateAuth = apiCoreRequests
-                .makePostRequest(url, userData);
+                .createUserWithInvalidEmail(url, userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth, 400);
         Assertions.assertResponseTextEquals(responseCreateAuth, "Invalid email format");
@@ -93,7 +93,7 @@ public class UserRegistryTest extends BaseTestCase {
 
 
         Response responseWithoutOneField = apiCoreRequests
-                .makePostRequest(url, userData);
+                .createUserWithoutOneField(url, userData);
 
         Assertions.assertResponseCodeEquals(responseWithoutOneField, 400);
         Assertions.assertResponseHasPart(responseWithoutOneField, "The following required params are missed: ");
@@ -107,7 +107,7 @@ public class UserRegistryTest extends BaseTestCase {
         userData.put("username", "u");
 
         Response responseWithShortUsername = apiCoreRequests
-                .makePostRequest(url, userData);
+                .createUserWithShortUsername(url, userData);
 
         Assertions.assertResponseCodeEquals(responseWithShortUsername, 400);
         Assertions.assertResponseTextEquals(responseWithShortUsername, "The value of 'username' field is too short");
@@ -122,7 +122,7 @@ public class UserRegistryTest extends BaseTestCase {
         userData.put("username", longUsername);
 
         Response responseWithLongUsername = apiCoreRequests
-                .makePostRequest(url, userData);
+                .createUserWithLongUsername(url, userData);
 
 
         Assertions.assertResponseCodeEquals(responseWithLongUsername, 400);
