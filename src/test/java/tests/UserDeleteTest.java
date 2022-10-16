@@ -1,6 +1,6 @@
 package tests;
 
-import io.qameta.allure.Description;
+import io.qameta.allure.*;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -18,7 +18,10 @@ public class UserDeleteTest extends BaseTestCase {
 
     private final apiCoreRequests apiCoreRequests = new apiCoreRequests();
 
+    @Epic(value = "Деманд - 'Удаление пользователя', ссылка в Jira - ...")
     @Test
+    @Description(value = "Тест проверяет, что мы не можем удалить пользователей с id 1 - 5, даже, если мы авторизованы под этими пользователями ")
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testDeleteUserId2() {
 
         Map<String, String> userData = new HashMap<>();
@@ -39,11 +42,14 @@ public class UserDeleteTest extends BaseTestCase {
         Assertions.assertResponseTextEquals(response, "Please, do not delete test users with ID 1, 2, 3, 4 or 5.");
     }
 
+    @Epic(value = "Деманд - 'Удаление пользователя', ссылка в Jira - ...")
+    @Issue(value = "Ссылка на баг в Jira ....")
     @Test
-    public void testDeleteOwnUser () {
+    @Description(value = "Тест проверяет, что мы можем удалить любых пользователей, чьи id не 1-5, если мы авторизованы под этими пользователями ")
+    public void testDeleteOwnUser() {
 
         //generate user
-        Map <String, String> userData = DataGenerator.getRegistrationData();
+        Map<String, String> userData = DataGenerator.getRegistrationData();
 
         Response responseCreateAuth = apiCoreRequests
                 .makePostRequest("https://playground.learnqa.ru/api/user/", userData);
@@ -51,7 +57,7 @@ public class UserDeleteTest extends BaseTestCase {
         String userId = responseCreateAuth.jsonPath().getString("id");
 
         //login
-        Map <String, String> authData = new HashMap<>();
+        Map<String, String> authData = new HashMap<>();
         authData.put("email", userData.get("email"));
         authData.put("password", userData.get("password"));
 
@@ -81,7 +87,9 @@ public class UserDeleteTest extends BaseTestCase {
     }
 
 
+    @Epic(value = "Деманд - 'Удаление пользователя', ссылка в Jira - ...")
     @Test
+    @Description(value = "Тест проверяет, что мы не можем удалить любых пользователей, если мы авторизованы под другим пользователем. Только того, под кем сейчас авторизованы(кроме 1-5)")
     public void testDeleteUserIdByAnotherUser() {
 
         //login by any user
